@@ -81,7 +81,7 @@ export const getJobById = async(req,res) => {
     }
 }
 // how much admin create a job.
-export const getAdminJobs = async() => {
+export const getAdminJobs = async(req,res) => {
     try {
         const adminId = req.id;
         const jobs = await Job.find({created_by: adminId});
