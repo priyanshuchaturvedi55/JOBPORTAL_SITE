@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   return (
-    <div className="bg-white fixed top-0 left-0 right-0 z-10">
+    
       <div className="flex items-center justify-between mx-auto max-w-7xl h-16">
         <div>
           <h1 className="text-2xl font-bold">
@@ -84,7 +84,7 @@ const Navbar = () => {
           }
             </div>
           </div>
-        </div>
+       
 
   );
 };
