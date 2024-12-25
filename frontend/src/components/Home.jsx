@@ -3,7 +3,7 @@ import Navbar from "./shared/Navbar";
 import HeroSection from "./HeroSection";
 import CategoryCarousel from "./CategoryCarousel";
 import LatestJobs from "./LatestJobs";
-import Footer from "./Footer";
+import Footer from "./shared/Footer";
 import Job from "./Jobs";
 
 const Home = () => {
@@ -14,7 +14,7 @@ const Home = () => {
       <CategoryCarousel />
       <LatestJobs />
       <Footer />
-      <Job />
+      {/* <Job /> */}
     </div>
   );
 };

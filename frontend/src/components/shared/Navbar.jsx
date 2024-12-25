@@ -8,12 +8,16 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar.jsx";
 import { Button } from "@/components/ui/button";
 import { User2, LogOut } from "lucide-react";
 import { Link } from 'react-router-dom';
+import { useSelector } from "react-redux";
 
 
  // Assuming Radix UI Avatar is used
- const user = false;
+ 
+ 
+ /////////// user hook are always reside inside the function.
 
 const Navbar = () => {
+  const {user}= useSelector(store=>store.auth);
   return (
     
       <div className="flex items-center justify-between mx-auto max-w-7xl h-16">
@@ -66,8 +70,8 @@ const Navbar = () => {
                   <div className="flex flex-col gap-3 text-gray-600">
                     <div className="flex w-fit items-center gap-2 cursor-pointer">
                       <User2/>
-                      <Button variant="link" className="bg-white">
-                        View Profile
+                      <Button variant="link"  className="bg-white">
+                        <Link to="/profile"> View Profile</Link>
                       </Button>
                     </div>
                     <div className="flex w-fit items-center my-2 gap-2 cursor-pointer">
