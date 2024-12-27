@@ -72,6 +72,8 @@ const Login = () => {
               name="email"
               onChange={changeEventHandler}
               placeholder="chaturvedi@gmail.com"
+              className="placeholder:text-gray-400 placeholder:blur-sm"
+              
             />
           </div>
 
@@ -83,6 +85,7 @@ const Login = () => {
               name="password"
               onChange={changeEventHandler}
               placeholder="*******"
+              className="placeholder:text-gray-400 placeholder:blur-sm"
             />
           </div>
 
