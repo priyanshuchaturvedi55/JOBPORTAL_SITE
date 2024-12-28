@@ -104,10 +104,9 @@ export const updateProfile = async(req,res) =>{
         const file = req.file;
         
         //// making some updatation
-        let skillsArray
-    
-        if(skillsArray){
-            skillsArray = skills.splits(",");
+        let skillsArray = [];
+        if(skills) {
+             skillsArray = skills.split(","); // Split skills by comma to create an array
         }
         const userId = req.id;
         let user = await User.findById(userId);
