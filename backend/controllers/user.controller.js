@@ -1,6 +1,8 @@
 import { User } from "../models/user.models.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import getDataUri from "../Utils/datauri.js";
+import cloudinary from "../Utils/cloudinary.js";
 
 export const register = async(req,res) =>{
     try{
@@ -11,6 +13,12 @@ export const register = async(req,res) =>{
                 success:false
             });
         };
+        const file = req.file;
+        const fileUri = getDataUri(file);
+        const cloudinaryResponse = await cloudinary.uploader.upload(fileUri.content,{
+            resource_type: 'raw',
+        });
+       
         const user = await User.findOne({email});
         if(user){
             return res.status(400).json({
@@ -25,6 +33,9 @@ export const register = async(req,res) =>{
             phoneNumber,
             password:hashedPassword,
             role,
+            profile:{
+                profilePhoto:cloudinaryResponse.secure_url,
+            }
         })
         return res.status(201).json({
             message:"Account created successfully.",
@@ -38,6 +49,7 @@ export const register = async(req,res) =>{
 export const login = async(req,res) =>{
     try{
         const{email, password, role} = req.body;
+
         if(!email || !password || !role){
             return res.status(400).json({
                 message: "something is missing",
@@ -94,7 +106,7 @@ export const logout = async (req,res) =>{
             success:true
         })
     }
-    catch(error){
+    catch{
         console.log(error);
     }
 }
@@ -102,6 +114,11 @@ export const updateProfile = async(req,res) =>{
     try{
         const{fullname, email, phoneNumber, bio , skills} = req.body;
         const file = req.file;
+        // cloundinay ayega idhar
+        const fileUri = getDataUri(file);
+        const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
+            resource_type: 'raw', // Ensures PDFs and other files are handled correctly
+        });
         
         //// making some updatation
         let skillsArray = [];
@@ -122,6 +139,13 @@ export const updateProfile = async(req,res) =>{
             if(phoneNumber) user.phoneNumber = phoneNumber
             if(bio) user.profile.bio = bio
             if(skills) user.profile.skills = skillsArray
+
+
+
+            if(cloudResponse){
+                user.profile.resume= cloudResponse.secure_url
+                user.profile.resumeOriginalName = file.originalname
+            }
 
             await user.save();
             user = {
