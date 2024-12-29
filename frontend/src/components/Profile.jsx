@@ -75,10 +75,10 @@ const Profile = () => {
           {isResume ? (
             <a
               target="blank"
-              href="https://github.com/priyanshuchaturvedi55"
+              href={user?.profile?.resume}
               className="text-blue-500 w-full c"
             >
-              Priyanshu
+              {user?.profile?.resumeOriginalName}
             </a>
           ) : (
             <span>NA</span>
