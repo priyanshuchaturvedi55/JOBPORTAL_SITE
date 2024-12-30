@@ -5,9 +5,8 @@ import { Button } from "./ui/button";
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { useNavigate } from "react-router-dom";
 
-const Job = () => {
+const Job = ({job}) => {
   const navigate = useNavigate();
-  const jobId = 'fdsandnfsan';
 
   return (
     <div className="p-5 rounded-md shadow-xl bg-white">
@@ -27,22 +26,22 @@ const Job = () => {
           </Avatar>
         </Button>
         <div>
-          <h1>Company Name</h1>
+          <h1>{job?.company?.name}</h1>
           <p>India</p>
         </div>
       </div>
    
       <div>
-        <h1 className="font-bold text-lg my-2">Title</h1>
-        <p className="text-gray-600 text-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis quam suscipit ipsa possimus dolores? Ab, sunt. Distinctio est tempore delectus?</p>
+        <h1 className="font-bold text-lg my-2">{job?.title}</h1>
+        <p className="text-gray-600 text-sm">{job?.description}</p>
     </div>
         <div className="flex items-center gap-2 mt-4">
-            <Badge className={'text-blue-700 font-bold'} variant="ghost">12 Position</Badge>
-            <Badge className={'text-blue-700 font-bold'} variant="ghost">Part Time</Badge>
-            <Badge className={'text-blue-700 font-bold'} variant="ghost">24LPA</Badge>
+            <Badge className={'text-blue-700 font-bold'} variant="ghost">{job?.position} Position</Badge>
+            <Badge className={'text-blue-700 font-bold'} variant="ghost">{job?.jobType}</Badge>
+            <Badge className={'text-blue-700 font-bold'} variant="ghost">{job?.salary}LPA</Badge>
         </div>
         <div className="flex items-center gap-4 mt-4">
-            <Button onClick={()=> navigate(`/description/${jobId}`)} variant="outline" >Details</Button>
+            <Button onClick={()=> navigate(`/description/${job?._id}`)} variant="outline" >Details</Button>
             <Button className="bg-[#7209b7]">Save For Later</Button>
         </div>
     </div>
