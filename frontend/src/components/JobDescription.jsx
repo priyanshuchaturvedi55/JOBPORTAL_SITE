@@ -1,5 +1,5 @@
-import { Badge } from "@/components/ui/badge";
 import React, { useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "./ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { JOB_API_END_POINT } from "./utils/constant";
@@ -8,19 +8,17 @@ import axios from "axios";
 import { setSingleJob } from "@/redux/jobSlice"; // Corrected import
 
 const JobDescription = () => {
-  const isApplied = true;
   const params = useParams();
-  const jobId = params.id;
-  const { singleJob } = useSelector((store) => store.job);
-  const{user} = useSelector(store=>store.auth) // Corrected state access
+  const Id = params.id;
+  const { singleJob } = useSelector(store => store.job);
+  const { user } = useSelector(store => store.auth); // Corrected state access
   const dispatch = useDispatch();
+  const isApplied = true;
 
   useEffect(() => {
     const fetchSingleJob = async () => {
       try {
-        const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, { withCredentials: true });
-        console.log(res);
-        
+        const res = await axios.get(`${JOB_API_END_POINT}/get/${Id}`, { withCredentials: true });
         if (res.data.success) {
           dispatch(setSingleJob(res.data.job)); // Correct action dispatch
         }
@@ -29,7 +27,15 @@ const JobDescription = () => {
       }
     };
     fetchSingleJob();
-  }, [jobId, dispatch, user?._id]);
+  }, [Id, dispatch, user?._id]);
+
+  // If job data isn't available yet, show loading message
+  if (!singleJob) {
+    return <div>Loading...</div>;
+  }
+
+  // Log jobId when available
+  console.log("Job _id:", singleJob?._id);
 
   return (
     <div className="max-w-7xl mx-auto my-10">
