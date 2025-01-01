@@ -2,10 +2,11 @@ import React, { useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "./ui/button";
 import { useDispatch, useSelector } from "react-redux";
-import { JOB_API_END_POINT } from "./utils/constant";
+import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from "./utils/constant";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { setSingleJob } from "@/redux/jobSlice"; // Corrected import
+import { toast } from "sonner";
 
 const JobDescription = () => {
   const params = useParams();
@@ -13,7 +14,20 @@ const JobDescription = () => {
   const { singleJob } = useSelector(store => store.job);
   const { user } = useSelector(store => store.auth); // Corrected state access
   const dispatch = useDispatch();
-  const isApplied = true;
+  const isApplied = singleJob?.applications?.some(application=>application.applicant == user?._id)||false;
+
+  const applyJObHandler = async () =>{
+    try {
+      const res = await axios.get(`${APPLICATION_API_END_POINT}/apply/${Id}`, { withCredentials: true });
+      console.log(res.data);
+      if(res.data.success){
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message);
+    }
+  }
 
   useEffect(() => {
     const fetchSingleJob = async () => {
@@ -55,6 +69,8 @@ const JobDescription = () => {
           </div>
         </div>
         <Button
+          onClick={isApplied? null : applyJObHandler}
+          diabled = {isApplied}
           variant="outline"
           className={`bg-black rounded-lg text-white ${isApplied ? 'bg-gray-600 hover:bg-gray-900 cursor-not-allowed' : 'bg-[#7209b7] hover:bg-[#7209b7]-900'}`}
         >
@@ -68,8 +84,8 @@ const JobDescription = () => {
         <h1 className="font-bold my-1">Description: <span className="pl-4 font-normal text-gray-800"> {singleJob?.description}</span></h1>
         <h1 className="font-bold my-1">Experience: <span className="pl-4 font-normal text-gray-800">{singleJob?.experienceLevel} yrs</span></h1>
         <h1 className="font-bold my-1">Salary: <span className="pl-4 font-normal text-gray-800">{singleJob?.salary}LPA</span></h1>
-        <h1 className="font-bold my-1">Total Applicants: <span className="pl-4 font-normal text-gray-800">4</span></h1>
-        <h1 className="font-bold my-1">Posted Date: <span className="pl-4 font-normal text-gray-800">26-12-2024</span></h1>
+        <h1 className="font-bold my-1">Total Applicants: <span className="pl-4 font-normal text-gray-800">{singleJob?.applications?.length}</span></h1>
+        <h1 className="font-bold my-1">Posted Date: <span className="pl-4 font-normal text-gray-800">{singleJob?.createdAt.split("T")[0]}</span></h1>
       </div>
     </div>
   );
