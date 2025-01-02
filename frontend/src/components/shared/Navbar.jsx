@@ -48,9 +48,22 @@ const Navbar = () => {
         </div>
         <div className="flex items-center gap-12">
           <ul className="flex font-medium items-center gap-5">
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/job">Jobs</Link></li>
-            <li><Link to="/browse">Browse</Link></li>
+            {
+              user && user.role== "recruiter"?(
+                <>
+                 <li><Link to="/admin/companies">Companies</Link></li>
+                 <li><Link to="/admin/job">Jobs</Link></li>
+                   
+                </>
+                
+              ):(
+              <>
+                <li><Link to="/">Home</Link></li>
+                <li><Link to="/job">Jobs</Link></li>
+                <li><Link to="/browse">Browse</Link></li>
+              </>
+              )      
+          }
           </ul>
           {
             !user ? (
@@ -62,7 +75,7 @@ const Navbar = () => {
             ):(
                 <Popover>
                 <PopoverTrigger asChild>
-                  <Avatar className="cursor-pointer">
+                  <Avatar className="cursor-pointer bg-slate-600">
                     <AvatarImage
                       src={user?.profile?.profilePhoto}
                       alt="@shadcn"
@@ -88,12 +101,17 @@ const Navbar = () => {
                    {/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++? */}
     
                   <div className="flex flex-col gap-3 text-gray-600">
-                    <div className="flex w-fit items-center gap-2 cursor-pointer">
+
+                  {
+                    user && user.role == "student" && (
+                      <div className="flex w-fit items-center gap-2 cursor-pointer">
                       <User2/>
                       <Button variant="link"  className="bg-white">
                         <Link to="/profile"> View Profile</Link>
                       </Button>
-                    </div>
+                    </div>  
+                    )
+                  }  
                     <div className="flex w-fit items-center my-2 gap-2 cursor-pointer">
                       <LogOut/>
                       <Button onClick = {logoutHandler}variant="link" className="bg-white">

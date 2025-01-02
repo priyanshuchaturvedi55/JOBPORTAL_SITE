@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "./ui/button";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,24 +8,29 @@ import axios from "axios";
 import { setSingleJob } from "@/redux/jobSlice"; // Corrected import
 import { toast } from "sonner";
 
+
 const JobDescription = () => {
   const params = useParams();
   const Id = params.id;
   const { singleJob } = useSelector(store => store.job);
   const { user } = useSelector(store => store.auth); // Corrected state access
   const dispatch = useDispatch();
-  const isApplied = singleJob?.applications?.some(application=>application.applicant == user?._id)||false;
+  const IntiallyApplied = singleJob?.applications?.some(application=>application.applicant == user?._id)||false;
+  const[isApplied, setIsApplied] = useState(IntiallyApplied);
 
-  const applyJObHandler = async () =>{
+  const applyJobHandler = async () =>{
     try {
       const res = await axios.get(`${APPLICATION_API_END_POINT}/apply/${Id}`, { withCredentials: true });
       console.log(res.data);
       if(res.data.success){
+        setIsApplied(true);
+        const updateSingleJob = {...singleJob, applications:[...singleJob.applications,{applicant:user?._id}]};
+        dispatch(setSingleJob(updateSingleJob));
         toast.success(res.data.message);
       }
     } catch (error) {
       console.log(error);
-      toast.error(error.response?.data?.message);
+      toast.error(error.response?.data?.message||"error are occured");
     }
   }
 
@@ -35,6 +40,7 @@ const JobDescription = () => {
         const res = await axios.get(`${JOB_API_END_POINT}/get/${Id}`, { withCredentials: true });
         if (res.data.success) {
           dispatch(setSingleJob(res.data.job)); // Correct action dispatch
+          setIsApplied(res.data.job.applications.some(application=>application.applicant == user?._id));
         }
       } catch (error) {
         console.log(error);
@@ -69,8 +75,8 @@ const JobDescription = () => {
           </div>
         </div>
         <Button
-          onClick={isApplied? null : applyJObHandler}
-          diabled = {isApplied}
+          onClick={isApplied? null : applyJobHandler}
+          disabled = {isApplied}
           variant="outline"
           className={`bg-black rounded-lg text-white ${isApplied ? 'bg-gray-600 hover:bg-gray-900 cursor-not-allowed' : 'bg-[#7209b7] hover:bg-[#7209b7]-900'}`}
         >
