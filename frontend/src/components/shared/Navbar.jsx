@@ -68,8 +68,8 @@ const Navbar = () => {
           {
             !user ? (
                 <div className="flex items-center gap-2">
-                    <Link to="/login"><Button variant="outline">Login</Button></Link>
-                    <Link to="/signup"><Button className="bg-[#6A38C2] hover:">Signup</Button></Link>
+                    <Link to="/login"><Button variant="outline" className="bg-color-silver-300 hover:bg-gray-200 text-black">Login</Button></Link>
+                    <Link to="/signup"><Button className="bg-[#6A38C2] hover:bg-violet-950">Signup</Button></Link>
                     
                 </div>
             ):(

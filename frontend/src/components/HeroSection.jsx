@@ -11,7 +11,7 @@ const HeroSection = () => {
         <p>"Explore endless opportunities, apply with confidence, and achieve the career of your dreams!."</p>
         <div className='flex w-[40%] shadow-lg border border-gray-200 pl-3 rounded-full items-center gap-4 mx-auto'>
             <input type="text" placeholder='Find your dream jobs...'  className='outline-none border-none w-full'/>
-            <Button className='rounded-r-full bg-[#6A38C2]'>
+            <Button className='rounded-r-full bg-[#6A38C2] hover:bg-violet-950'>
                 <Search className='h-5 w-5 text-[white]'/>
             </Button>
         </div>
