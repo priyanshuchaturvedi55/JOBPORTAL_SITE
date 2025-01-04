@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../shared/Navbar";
 import { Button } from "../ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -9,8 +9,9 @@ import { COMPANY_API_END_POINT } from "../utils/constant";
 import {  useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react"; // Add this import
-import { setSingleCompany } from "@/redux/companySlice";
+
 import { useSelector } from "react-redux";
+
 
 
 const Companiesetup = () => {
@@ -24,8 +25,8 @@ const Companiesetup = () => {
   const[loading , setLoading] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
-  const singleCompany = useSelector(store=> store.company);
-  useGetAllJobs(params.id);
+  const {singleCompany} = useSelector(store=> store.company);
+  
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
@@ -47,7 +48,7 @@ const Companiesetup = () => {
       setLoading(true);
       const res = await axios.put(`${COMPANY_API_END_POINT}/update/${params.id}`, formData, {
         headers:{
-          'content-Type':'multipart/form-data'
+          'Content-Type':'multipart/form-data'
         },
         withCredentials:true
       })
@@ -57,7 +58,7 @@ const Companiesetup = () => {
       }
     } catch (error) {
       console.log(error);
-      toast.error(error?.res?.data?.message);
+      toast.error(error?.response?.data?.message);
     }   
     finally{
       setLoading(false);
@@ -66,7 +67,7 @@ const Companiesetup = () => {
   useEffect(()=>{
     setInput({
       name:singleCompany.name||"",
-      description: SingleCompany.description|| "",
+      description: singleCompany.description|| "",
       website: singleCompany.website || "",
       location: singleCompany.location || "",
       file: singleCompany.file || null
