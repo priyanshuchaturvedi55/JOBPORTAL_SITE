@@ -11,10 +11,13 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react"; // Add this import
 
 import { useSelector } from "react-redux";
+import useGetCompanyById from "@/hooks/useGetCompanyById";
 
 
 
 const Companiesetup = () => {
+  const params = useParams();
+  useGetCompanyById(params.id);
   const [input, setInput] = useState({
     name: "",
     description: "",
@@ -23,7 +26,6 @@ const Companiesetup = () => {
     file: null,
   });
   const[loading , setLoading] = useState(false);
-  const params = useParams();
   const navigate = useNavigate();
   const {singleCompany} = useSelector(store=> store.company);
   
@@ -48,7 +50,7 @@ const Companiesetup = () => {
       setLoading(true);
       const res = await axios.put(`${COMPANY_API_END_POINT}/update/${params.id}`, formData, {
         headers:{
-          'Content-Type':'multipart/form-data'
+          "Content-Type": "multipart/form-data"
         },
         withCredentials:true
       })
@@ -132,6 +134,7 @@ const Companiesetup = () => {
             <Label>Logo</Label>
             <Input
               type="file"
+              name="file"
               accept="image/*"
               onChange={changeFileHandler}
             />

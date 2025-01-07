@@ -13,6 +13,7 @@ const Companies = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [search, setSearch] = useState("");
+  
     useEffect(() =>{
       dispatch(setSearchCompanies(search));
     },[search]);
@@ -27,6 +28,8 @@ const Companies = () => {
                 <Input
                    className="w-fit placeholder:text-gray-400 placeholder:blur-sm"
                    placeholder="Filter by name"
+                   value={search} // Bind the value to search state
+                  onChange={(e) => setSearch(e.target.value)} // Update the search state
                 />
                 <Button onClick ={ () => navigate("/admin/companies/create")} className="bg-black text-white bg-gray-600 hover:bg-gray-900 ">New Company</Button>
             </div>
