@@ -1,8 +1,7 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+
+
 import "./App.css";
-import Navbar from "/src/components/shared/Navbar.jsx";
+
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
@@ -14,7 +13,9 @@ import JobDescription from "./components/JobDescription";
 import Companies from "./components/admin/Companies";
 import Companiescreate from "./components/admin/Companiescreate";
 import Companiesetup from "./components/admin/Companiesetup";
-import AdminJobs from "./components/admin/adminJobs";
+import AdminJobs from "./components/admin/AdminJobs";
+import PostJob from "./components/admin/PostJob";
+
 
 
 
@@ -63,8 +64,12 @@ const appRouter = createBrowserRouter([
     element: <Companiesetup />,
   },
   {
-    path: "/admin/jobs",
+    path: "/admin/job",
     element: <AdminJobs/>,
+  },
+  {
+    path: "/admin/jobs/create",
+    element: <PostJob/>,
   },
 
   
