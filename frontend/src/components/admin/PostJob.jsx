@@ -1,42 +1,64 @@
-import React, { useState } from "react";
-import Navbar from "../shared/Navbar";
-import { Label } from "@radix-ui/react-label";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { useSelector } from "react-redux";
-import {
-  Select,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@radix-ui/react-select";
-import { SelectContent } from "../ui/select";
+import React, { useState } from 'react'
+import Navbar from '../shared/Navbar'
+import { Label } from '../ui/label'
+import { Input } from '../ui/input'
+import { Button } from '../ui/button'
+import { useSelector } from 'react-redux'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+import { JOB_API_END_POINT } from '../utils/constant'
+import { useNavigate } from 'react-router-dom'
+import { Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
+import axios from 'axios'
+
+
+
 const PostJob = () => {
-  const [input, setInput] = useState({
-    title: "",
-    description: "",
-    requirements: "",
-    salary: "",
-    location: "",
-    jobType: "",
-    experience: "",
-    position: 0,
-    companyId: "",
-  });
-  const { companies } = useSelector((store) => store.company);
-  const changeEventHandler = (e) => {
-    setInput({ ...input, [e.target.name]: e.target.value });
-  };
-  const selectChangeHandler = (value) =>{
-    const selectedCompany = companies.find((company)=> company.name.toLowerCase() == value);
-    setInput({...input, companyId:selectedCompany._id});
-  }
-  
-  const submitHandler = (e) =>{
-    e.preventDefault();
-    console.log(input);
-  }
+    const [input, setInput] = useState({
+        title: "",
+        description: "",
+        requirements: "",
+        salary: "",
+        location: "",
+        jobType: "",
+        experience: "",
+        position: 0,
+        companyId: ""
+    });
+   const [loading, setLoading] = useState(false);
+   const navigate = useNavigate();
+
+    const { companies } = useSelector(store => store.company);
+    const changeEventHandler = (e) => {
+        setInput({ ...input, [e.target.name]: e.target.value });
+    };
+
+    const selectChangeHandler = (value) => {
+        const selectedCompany = companies.find((company)=> company.name.toLowerCase() === value);
+        setInput({...input, companyId:selectedCompany._id});
+    };
+    const submitHandler = async(e) =>{
+      e.preventDefault();
+      try {
+        setLoading(true);
+        const res = await axios.post(`${JOB_API_END_POINT}/post`,input, {
+          header:{
+            'Content-Type':'application/json'
+          },
+          withCredentials:true
+        });
+        if(res.data.success){
+          toast.success(res.data.message);
+          navigate("/admin/job");
+        }
+      } catch (error) {
+            console.log(error);
+            toast.error(error.response?.data?.message||"error are occured");
+          }
+      finally{
+        setLoading(false);
+      }
+    }
   return (
     <div>
       <Navbar />
@@ -129,10 +151,12 @@ const PostJob = () => {
             </div>
             <div className="relative">
               {companies.length > 0 && (
-                <Select onValueChange={selectChangeHandler}>
+                <Select onValueChange={selectChangeHandler}
+                
+                >
                   {/* Trigger Button */}
                   <SelectTrigger className="w-[180px] relative z-10 bg-white text-black">
-                    <SelectValue placeholder="Select a company" />
+                    <SelectValue placeholder={"Select a company"} />
                   </SelectTrigger>
 
                   {/* Dropdown Content */}
@@ -150,12 +174,15 @@ const PostJob = () => {
                 </Select>
               )}
             </div>
-            </div>
+          </div>
 
-            <Button className="w-full text-white bg-black hover:bg-gray-800 mt-4 relative z-0">
-              Post New Job
-            </Button>
-          
+          {/* <Button className="w-full text-white bg-black hover:bg-gray-800 mt-4 relative z-0">
+            Post New Job
+          </Button> */}
+
+          {
+          loading ? <Button><Loader2 className="mr-2 h-4 w-4 animate-spain"/> Please wait </Button> :  <Button type="submit" className="w-full my-4 bg-black hover:bg-gray-800 text-white"> Post New Job </Button>
+          }
 
           {companies.length == 0 && (
             <p className="text-xs text-red-600 font-bold text-center my-3">
