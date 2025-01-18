@@ -7,61 +7,17 @@ import cloudinary from "../Utils/cloudinary.js";
 export const register = async(req,res) =>{
     try{
         const{fullname, email, phoneNumber, password, role} = req.body;
-        if(!email){
+        if(!fullname || !email || !phoneNumber || !password || !role){
             return res.status(400).json({
-                message:"Email is missing ",
-                success:false
-            });
-        };
-        if(!fullname ){
-            return res.status(400).json({
-                message:"fullname is missing ",
-                success:false
-            });
-        };
-        if(!phoneNumber){
-            return res.status(400).json({
-                message:"phoneNumber is missing ",
-                success:false
-            });
-        };
-        if(!password ){
-            return res.status(400).json({
-                message:"password is missing ",
-                success:false
-            });
-        };
-        if(!role ){
-            return res.status(400).json({
-                message:"role is missing ",
+                message:"something is missing ",
                 success:false
             });
         };
         const file = req.file;
-        if (!file) {
-            return res.status(400).json({
-              message: "File is missing.",
-              success: false
-            });
-          }
-        try{
         const fileUri = getDataUri(file);
         const cloudinaryResponse = await cloudinary.uploader.upload(fileUri.content,{
             resource_type: 'raw',
         });
-        return res.status(200).json({
-            message: "File uploaded successfully.",
-            success: true,
-            cloudinaryData: cloudinaryResponse
-          });
-        }  
-        catch(error){
-            return res.status(500).json({
-                message: "Error uploading file to Cloudinary.",
-                success: false,
-                error: error.message
-              });
-        }
        
         const user = await User.findOne({email});
         if(user){
