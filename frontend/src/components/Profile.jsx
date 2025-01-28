@@ -8,10 +8,12 @@ import { Label } from "@radix-ui/react-label";
 import AppliedJobTable from "./AppliedJobTable";
 import UpdateProfileDialog from "./UpdateProfileDialog";
 import { useSelector } from "react-redux";
+import useGetAppliedJobs from "@/hooks/useGetAppliedJob";
 
 
 
 const Profile = () => {
+  useGetAppliedJobs();
   const isResume = true;
   const [open, setOpen] = useState(false);
   const{user} = useSelector(store=> store.auth);

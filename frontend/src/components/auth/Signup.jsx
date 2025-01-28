@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../shared/Navbar";
 import { Input } from "@/components/ui/input.jsx";
 import { Label } from "@/components/ui/label.jsx";
 import { RadioGroup } from "@/components/ui/radio-group.jsx";
 import { Button } from "@/components/ui/button.jsx";
 import { Link, useNavigate } from "react-router-dom";
-import { Toaster } from "@/components/ui/sonner"
-import { toast } from "sonner"
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 import axios from "axios";
 import { USER_API_END_POINT } from "../utils/constant.js";
@@ -23,7 +23,7 @@ const Signup = () => {
     role: "",
     file: "",
   });
-  const {loading} = useSelector(store=>store.auth);
+  const { loading, user } = useSelector((store) => store.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -39,36 +39,38 @@ const Signup = () => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("fullname", input.fullname);
-    formData.append("email",input.email);
-    formData.append("phoneNumber",input.phoneNumber);
-    formData.append("password",input.password);
-    formData.append("role",input.role);
-    if(input.file){
+    formData.append("email", input.email);
+    formData.append("phoneNumber", input.phoneNumber);
+    formData.append("password", input.password);
+    formData.append("role", input.role);
+    if (input.file) {
       formData.append("file", input.file);
     }
-    
-    try{
+
+    try {
       dispatch(setLoading(true));
-      const res = await axios.post(`${USER_API_END_POINT}/register`, formData, 
-        {headers:{
-          "Content-Type":"multipart/form-data"
+      const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
         withCredentials: true,
       });
-      if(res.data.success){
+      if (res.data.success) {
         navigate("/login");
-        toast.success(res.data.message)
+        toast.success(res.data.message);
       }
-    }
-    catch(error){
-       console.log(error);
-       toast.error(error?.response?.data?.message || "An error occurred");
-
-    }
-    finally{
-          dispatch(setLoading(false));
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message || "An error occurred");
+    } finally {
+      dispatch(setLoading(false));
     }
   };
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  });
 
   return (
     <div>
@@ -80,46 +82,62 @@ const Signup = () => {
         >
           <h1 className="font-bold text-xl mb-5">Sign Up</h1>
           <div className="my-2">
-            <Label>Full Name</Label>
+            <Label>
+              <span className="text-red-500">*</span> {/* Red asterisk */}
+              Full Name
+            </Label>
             <Input
-             type="text"
-             value={input.fullname}
-             name="fullname"
-             onChange={changeEventHandler}
-             placeholder="priyanshu"
+              type="text"
+              value={input.fullname}
+              name="fullname"
+              onChange={changeEventHandler}
+              placeholder="priyanshu"
+              className="placeholder:text-gray-400 placeholder:blur-sm"
             />
           </div>
 
           <div className="my-2">
-            <Label>Email</Label>
+            <Label>
+              <span className="text-red-500">*</span> {/* Red asterisk */}
+              Email
+            </Label>
             <Input
               type="email"
               value={input.email}
               name="email"
               onChange={changeEventHandler}
               placeholder="chaturvedi@gmail.com"
+              className="placeholder:text-gray-400 placeholder:blur-sm"
             />
           </div>
 
           <div className="my-2">
-            <Label>PhoneNumber</Label>
+            <Label>
+              <span className="text-red-500">*</span> {/* Red asterisk */}
+              PhoneNumber
+            </Label>
             <Input
               type="text"
               value={input.phoneNumber}
               name="phoneNumber"
               onChange={changeEventHandler}
               placeholder="00000000"
+              className="placeholder:text-gray-400 placeholder:blur-sm"
             />
           </div>
 
           <div className="my-2">
-            <Label>Password</Label>
+            <Label>
+              <span className="text-red-500">*</span> {/* Red asterisk */}
+              Password
+            </Label>
             <Input
               type="password"
               value={input.password}
               name="password"
               onChange={changeEventHandler}
               placeholder="*******"
+              className="placeholder:text-gray-400 placeholder:blur-sm"
             />
           </div>
 
@@ -150,7 +168,10 @@ const Signup = () => {
               </div>
             </RadioGroup>
             <div className="flex items-center gap-2">
-              <Label>Profile</Label>
+              <Label>
+                Profile
+                <span className="text-red-500">*</span> {/* Red asterisk */}
+              </Label>
               <Input
                 accept="image/*"
                 type="file"
@@ -160,10 +181,20 @@ const Signup = () => {
             </div>
           </div>
 
-          {
-            loading ? <Button><Loader2 className="mr-2 h-4 w-4 animate-spain"/> Please wait </Button> :  <Button type="submit" className="w-full my-4 bg-black hover:bg-gray-800 text-white"> Signup </Button>
-          }
-
+          {loading ? (
+            <Button className="w-full my-4 bg-black hover:bg-gray-800 text-white flex items-center justify-center rounded-full">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+              {/* Ensure the spinner spins */}
+              Please wait
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              className="w-full my-4 bg-black hover:bg-gray-800 text-white rounded-full"
+            >
+              Signup
+            </Button>
+          )}
 
           <span className="text-sm">
             Already have an account?{" "}

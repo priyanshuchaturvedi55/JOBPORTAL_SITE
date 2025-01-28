@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../shared/Navbar";
 import { Input } from "@/components/ui/input.jsx";
 import { Label } from "@/components/ui/label.jsx";
 import { RadioGroup } from "@/components/ui/radio-group.jsx";
 import { Button } from "@/components/ui/button.jsx";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import axios from "axios";
 import { USER_API_END_POINT } from "../utils/constant";
@@ -18,42 +18,42 @@ const Login = () => {
     password: "",
     role: "",
   });
-  const {loading} = useSelector(store=>store.auth);
+  const { loading, user } = useSelector((store) => store.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
 
-  
   const submitHandler = async (e) => {
     e.preventDefault();
-    
-    try{
+
+    try {
       dispatch(setLoading(true));
-      const res = await axios.post(`${USER_API_END_POINT}/login`, input, 
-        {headers:{
-          "Content-Type":"application/json"
+      const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
+        headers: {
+          "Content-Type": "application/json",
         },
-        withCredentials:true,
+        withCredentials: true,
       });
-      if(res.data.success){
+      if (res.data.success) {
         dispatch(setUser(res.data.user));
         navigate("/");
-        toast.success(res.data.message)
+        toast.success(res.data.message);
       }
-    }
-    catch(error){
-       console.log(error);
-       toast.error(error?.response?.data?.message || "An error occurred");
-    }
-    finally{
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message || "An error occurred");
+    } finally {
       dispatch(setLoading(false));
     }
   };
-
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  });
 
   return (
     <div>
@@ -73,7 +73,6 @@ const Login = () => {
               onChange={changeEventHandler}
               placeholder="chaturvedi@gmail.com"
               className="placeholder:text-gray-400 placeholder:blur-sm"
-              
             />
           </div>
 
@@ -115,21 +114,27 @@ const Login = () => {
                 <Label htmlFor="r2">Recruiter</Label>
               </div>
             </RadioGroup>
-
-
-
           </div>
-          {
-            loading ? <Button><Loader2 className="mr-2 h-4 w-4 animate-spain"/> Please wait </Button> :  <Button type="submit" className="w-full my-4 bg-black hover:bg-gray-800 text-white"> Login </Button>
-          }
+          {loading ? (
+            <Button className="w-full my-4 bg-black hover:bg-gray-800 text-white flex items-center justify-center rounded-full">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+              {/* Ensure the spinner spins */}
+              Please wait
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              className="w-full my-4 bg-black hover:bg-gray-800 text-white rounded-full"
+            >
+              Login
+            </Button>
+          )}
           <span className="text-sm">
-            Don;t have an account?{" "}
+            Don't have an account?{" "}
             <Link to="/signup" className="text-blue-600">
               Signup
             </Link>{" "}
           </span>
-
-
         </form>
       </div>
     </div>
