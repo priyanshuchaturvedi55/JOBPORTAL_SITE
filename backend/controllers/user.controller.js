@@ -7,15 +7,15 @@ import cloudinary from "../Utils/cloudinary.js";
 export const register = async(req,res) =>{
     try{
         const{fullname, email, phoneNumber, password, role} = req.body;
-        if(!email){
-            return res.status(400).json({
-                message:"Email is missing ",
-                success:false
-            });
-        };
         if(!fullname ){
             return res.status(400).json({
                 message:"fullname is missing ",
+                success:false
+            });
+        };
+        if(!email){
+            return res.status(400).json({
+                message:"Email is missing ",
                 success:false
             });
         };
@@ -44,6 +44,13 @@ export const register = async(req,res) =>{
               success: false
             });
           }
+
+          if(!fullname || !email || !phoneNumber || !password || !role){
+            return res.status(400).json({
+                message:" everthing is missing ",
+                success:false
+            });
+        };  
         try{
         const fileUri = getDataUri(file);
         const cloudinaryResponse = await cloudinary.uploader.upload(fileUri.content,{
